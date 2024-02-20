@@ -7,6 +7,8 @@ TagManager:
   - CambioDirezione
   - Cesto
   - Palla
+  - Basket
+  - Floor
   layers:
   - Default
   - TransparentFX

@@ -4,30 +4,27 @@ using UnityEngine;
 
 public class PallaScript : MonoBehaviour
 {
+    public GameObject ballPrefab;
+    private Vector2 spawnPosition;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        spawnPosition = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        RotateBallTowardsMouse();
+        if (other.CompareTag("Floor") || other.CompareTag("Basket"))
+        {
+            DestroyAndRespawn();
+        }
     }
 
-    void RotateBallTowardsMouse()
+    void DestroyAndRespawn()
     {
-        Vector3 mousePosition = Input.mousePosition;
-        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        Destroy(gameObject);
 
-        Vector2 direction = new Vector2(
-                mousePosition.x - transform.position.x,
-                mousePosition.y - transform.position.y
-            );
-
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
+        Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
     }
 }

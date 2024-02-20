@@ -46,22 +46,6 @@ public class CannoneScript : MonoBehaviour {
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        //if (angle < 0)
-        //{
-        //    angle += 360;
-        //}
-
-        //if (angle > 180)
-        //{
-        //    if (angle < 360 + minAngle) angle = minAngle;
-        //    else if (angle > 360 + maxAngle) angle = maxAngle;
-        //}
-        //else
-        //{
-        //    if (angle < minAngle) angle = minAngle;
-        //    else if (angle > maxAngle) angle = maxAngle;
-        //}
-
         transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
     }
 
