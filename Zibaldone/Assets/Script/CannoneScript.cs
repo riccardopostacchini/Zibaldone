@@ -6,6 +6,8 @@ public class CannoneScript : MonoBehaviour {
 
     public Rigidbody2D ballRigidbody;
     public float launchForce = 500f;
+    public float minAngle = -180;
+    public float maxAngle = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -32,12 +34,30 @@ public class CannoneScript : MonoBehaviour {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
+        if (mousePosition.y > 4) return;
+
         Vector2 direction = new Vector2(
                 mousePosition.x - transform.position.x,
                 mousePosition.y - transform.position.y
             );
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        //if (angle < 0)
+        //{
+        //    angle += 360;
+        //}
+
+        //if (angle > 180)
+        //{
+        //    if (angle < 360 + minAngle) angle = minAngle;
+        //    else if (angle > 360 + maxAngle) angle = maxAngle;
+        //}
+        //else
+        //{
+        //    if (angle < minAngle) angle = minAngle;
+        //    else if (angle > maxAngle) angle = maxAngle;
+        //}
 
         transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
     }
