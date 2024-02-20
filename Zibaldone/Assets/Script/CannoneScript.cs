@@ -5,6 +5,7 @@ using UnityEngine;
 public class CannoneScript : MonoBehaviour {
 
     public Rigidbody2D ballRigidbody;
+    public GameObject arrow;
     public float launchForce = 500f;
     public float minAngle = -180;
     public float maxAngle = 0;
@@ -26,6 +27,8 @@ public class CannoneScript : MonoBehaviour {
             ballRigidbody.transform.parent = null;
 
             ApplyLaunchForce();
+
+            Destroy(arrow);
         }
     }
 

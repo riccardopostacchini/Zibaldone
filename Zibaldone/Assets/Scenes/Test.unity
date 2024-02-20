@@ -1132,8 +1132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1b06d0daf04e3546bd682d9c6ffd2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigidBody2D: {fileID: 2069620702}
   lineRenderer: {fileID: 1144882592}
-  maxDistance: 5
+  launchForce: 10
+  resolution: 30
+  maxTime: 1
 --- !u!1 &1155284674
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,7 +1237,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballRigidbody: {fileID: 2069620702}
-  launchForce: 700
+  arrow: {fileID: 1144882590}
+  launchForce: 500
   minAngle: -180
   maxAngle: 0
 --- !u!1 &1220722161
