@@ -34,7 +34,7 @@ public class CannoneScript : MonoBehaviour {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        if (mousePosition.y > 4) return;
+        if (mousePosition.y > 4.2) return;
 
         Vector2 direction = new Vector2(
                 mousePosition.x - transform.position.x,
@@ -67,7 +67,13 @@ public class CannoneScript : MonoBehaviour {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
 
-        Vector2 launchDirection = (mousePosition - transform.position).normalized;
+        Vector2 launchDirection;
+
+        if (mousePosition.y > 4.2)
+        {
+            launchDirection = (new Vector3(mousePosition.x, 4.2f, 0) - transform.position).normalized;
+        }
+        else launchDirection = (mousePosition - transform.position).normalized;
 
         ballRigidbody.AddForce(launchDirection * launchForce);
     }
