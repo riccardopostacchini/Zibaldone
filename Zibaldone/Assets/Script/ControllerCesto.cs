@@ -4,31 +4,30 @@ using UnityEngine;
 
 public class ControllerCesto : MonoBehaviour
 {
-    public float basketSpeed = 5f; // Velocità di movimento del cesto
-    
-
-    private Rigidbody2D rb;
-    private float direction = 1f; // Inizialmente va verso destra
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    public float maxSpeed = 3.0f; // Velocità massima di movimento
+    public Transform leftLimit; // Punto di riferimento per il limite sinistro
+    public Transform rightLimit; // Punto di riferimento per il limite destro
+    private float targetSpeed = 0f; // Velocità target verso cui interpolare
+    private int direction = -1; // Direzione iniziale del movimento: -1 sinistra, 1 destra
 
     void Update()
     {
-        // Muovi il cesto a sinistra e a destra
-        float movement = direction * basketSpeed * Time.deltaTime;
-        rb.MovePosition(new Vector2(transform.position.x + movement, transform.position.y));
+        // Calcola la distanza dal limite più vicino e usa questa per determinare la targetSpeed
+        float distanceToLimit = direction == -1 ? transform.position.x - leftLimit.position.x : rightLimit.position.x - 0.5f - transform.position.x;
+        // Mappa la distanza a un valore di velocità, con 0 quando il cesto è molto vicino al limite
+        targetSpeed = Mathf.Lerp(0, maxSpeed, distanceToLimit / maxSpeed);
+
+        // Aggiorna la velocità corrente del cesto verso la targetSpeed
+        float currentSpeed = Mathf.MoveTowards(GetComponent<Rigidbody2D>().velocity.x, targetSpeed * direction, Time.deltaTime * maxSpeed);
+        GetComponent<Rigidbody2D>().velocity = new Vector2(currentSpeed, GetComponent<Rigidbody2D>().velocity.y);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // Cambia direzione quando il cesto entra in contatto con un trigger
         if (other.CompareTag("CambioDirezione"))
         {
-            direction *= -1f;
+            // Inverti la direzione del movimento
+            direction *= -1;
         }
-        
     }
 }
