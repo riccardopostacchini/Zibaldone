@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class CannoneScript : MonoBehaviour {
 
-    public Rigidbody2D ballRigidbody;
-    public GameObject arrow;
+    public GameObject ballPrefab;
+    public GameObject arrowPrefab;
     public float launchForce = 500f;
-    public float minAngle = -180;
-    public float maxAngle = 0;
+    public Transform shootPoint;
+    public GameObject currentBall;
+    public GameObject currentArrow;
+    public float ballScale = 0.25f;
 
     // Start is called before the first frame update
     void Start()
     {
-        ballRigidbody.gravityScale = 0;
+        SpawnBall();
+        SpawnArrow();
     }
 
     // Update is called once per frame
@@ -21,14 +24,11 @@ public class CannoneScript : MonoBehaviour {
     {
         RotateCannonTowardsMouse();
 
-        if (Input.GetMouseButtonDown(0) && ballRigidbody.transform.parent == transform)
+        if (Input.GetMouseButtonDown(0) && currentBall != null)
         {
-            ballRigidbody.gravityScale = 1;
-            ballRigidbody.transform.parent = null;
-
             ApplyLaunchForce();
 
-            Destroy(arrow);
+            Destroy(currentArrow);
         }
     }
 
@@ -37,12 +37,10 @@ public class CannoneScript : MonoBehaviour {
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        if (mousePosition.y > 4.2) return;
-
         Vector2 direction = new Vector2(
-                mousePosition.x - transform.position.x,
-                mousePosition.y - transform.position.y
-            );
+                (mousePosition.y > 4.2f ? (mousePosition.x > -1.5f ? 2f : -5f) : mousePosition.x) - transform.position.x,
+                (mousePosition.y > 4.2f ? 4.2f : mousePosition.y) - transform.position.y
+            ).normalized;
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
@@ -51,6 +49,10 @@ public class CannoneScript : MonoBehaviour {
 
     void ApplyLaunchForce()
     {
+        currentBall.transform.SetParent(null); // Scollega la palla dal cannone
+        Rigidbody2D ballRigidbody = currentBall.GetComponent<Rigidbody2D>();
+        ballRigidbody.isKinematic = false; // La palla ora risponderà alla gravità
+        ballRigidbody.gravityScale = 1; // Assicurati che la gravità sia impostata correttamente
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
 
@@ -58,12 +60,26 @@ public class CannoneScript : MonoBehaviour {
 
         if (mousePosition.y > 4.2)
         {
-            launchDirection = (new Vector3(mousePosition.x, 4.2f, 0) - transform.position).normalized;
+            launchDirection = (new Vector3((mousePosition.x + 1.5f) > 0 ? 2f : -5f, 4.2f, 0) - transform.position).normalized;
         }
         else launchDirection = (mousePosition - transform.position).normalized;
-
         ballRigidbody.AddForce(launchDirection * launchForce);
+        currentBall = null; // Resetta il riferimento corrente della palla
     }
 
-    
+    public void SpawnBall()
+    {
+        if (currentBall != null) Destroy(currentBall); // Distruggi eventuali palle precedenti
+        currentBall = Instantiate(ballPrefab, shootPoint.position, Quaternion.identity);
+        currentBall.transform.SetParent(shootPoint); // Collega la palla al punto di lancio
+        currentBall.GetComponent<Rigidbody2D>().isKinematic = true; // La palla non sarà soggetta alla gravità fino al lancio
+        currentBall.transform.localScale = new Vector3(ballScale, ballScale, ballScale);
+    }
+
+    public void SpawnArrow()
+    {
+        if (currentArrow != null) Destroy(currentArrow); // Distruggi eventuali frecce precedenti
+        currentArrow = Instantiate(arrowPrefab, shootPoint.position, Quaternion.identity);
+        currentArrow.transform.SetParent(shootPoint); // Collega la freccia al punto di lancio
+    }
 }

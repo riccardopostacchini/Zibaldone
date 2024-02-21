@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class TrajectoryRenderer : MonoBehaviour
 {
-    public Rigidbody2D rigidBody2D;
+    public Transform shootPoint;
+    public Rigidbody2D ballPrefab;
     public LineRenderer lineRenderer;
     public float launchForce = 500f; // Forza di lancio che applicherai
     public int resolution = 30; // Numero di punti lungo la traiettoria
@@ -12,15 +13,28 @@ public class TrajectoryRenderer : MonoBehaviour
 
     void Update()
     {
+        shootPoint = GameObject.Find("ShootPoint").transform;
+
         DrawTrajectory();
     }
 
     void DrawTrajectory()
     {
+        Transform cannon = GameObject.Find("Cannone").transform;
+
         List<Vector3> points = new List<Vector3>();
-        Vector2 startPosition = rigidBody2D.position;
-        Vector2 launchDirection = -transform.up;
-        Vector2 startVelocity = launchDirection * (launchForce / rigidBody2D.mass);
+        Vector2 startPosition = shootPoint.position;
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0;
+
+        Vector2 launchDirection;
+
+        if (mousePosition.y > 4.2)
+        {
+            launchDirection = (new Vector3((mousePosition.x > -1.5f ? 2f : -5f), 4.2f, 0) - cannon.position).normalized;
+        }
+        else launchDirection = (mousePosition - cannon.position).normalized;
+        Vector2 startVelocity = launchDirection * (launchForce / ballPrefab.mass);
 
         float timeDelta = maxDistance / resolution;
 

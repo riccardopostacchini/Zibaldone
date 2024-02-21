@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class PallaScript : MonoBehaviour
 {
-    public GameObject ballPrefab;
-    private Vector2 spawnPosition;
+    public GameObject ballPrefab; // Il prefab della palla
+    public GameObject arrowPrefab; // Il prefab della freccia
+    public Transform cannon; // Il Transform del cannone
+    
+    public static Vector2 spawnPosition; // La posizione in cui la palla deve essere creata
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        spawnPosition = transform.position;
+        cannon = GameObject.Find("Cannone").transform;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -23,8 +25,11 @@ public class PallaScript : MonoBehaviour
 
     void DestroyAndRespawn()
     {
+        // Distruggi la palla attuale
         Destroy(gameObject);
 
-        Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+        CannoneScript cannoneScript = cannon.GetComponent<CannoneScript>();
+        cannoneScript.SpawnBall();
+        cannoneScript.SpawnArrow();
     }
 }

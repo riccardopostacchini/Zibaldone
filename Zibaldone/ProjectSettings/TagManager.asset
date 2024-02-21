@@ -9,6 +9,8 @@ TagManager:
   - Palla
   - Basket
   - Floor
+  - Cannone
+  - ShootPoint
   layers:
   - Default
   - TransparentFX
@@ -45,4 +47,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Palla
+    uniqueID: 3687688817
+    locked: 0
+  - name: Freccia
+    uniqueID: 1814335281
     locked: 0
