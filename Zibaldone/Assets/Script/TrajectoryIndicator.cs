@@ -31,7 +31,7 @@ public class TrajectoryRenderer : MonoBehaviour
 
         if (mousePosition.y > 4.2)
         {
-            launchDirection = (new Vector3((mousePosition.x > -1.5f ? 2f : -5f), 4.2f, 0) - cannon.position).normalized;
+            launchDirection = (new Vector3((mousePosition.x > cannon.position.x ? cannon.position.x + 3f : cannon.position.x - 3f), 4.2f, 0) - cannon.position).normalized;
         }
         else launchDirection = (mousePosition - cannon.position).normalized;
         Vector2 startVelocity = launchDirection * (launchForce / ballPrefab.mass);

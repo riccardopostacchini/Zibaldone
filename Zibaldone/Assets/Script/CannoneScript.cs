@@ -12,6 +12,17 @@ public class CannoneScript : MonoBehaviour {
     public GameObject currentArrow;
     public float ballScale = 0.25f;
 
+    public float speed = 5.0f; // Velocità di movimento del cannone
+
+    private Rigidbody2D rb;
+    private bool canMoveLeft = true;
+    private bool canMoveRight = true;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +34,18 @@ public class CannoneScript : MonoBehaviour {
     void Update()
     {
         RotateCannonTowardsMouse();
+
+        float input = Input.GetAxis("Horizontal");
+
+        if ((input < 0 && canMoveLeft) || (input > 0 && canMoveRight))
+        {
+            Move(input);
+        }
+        else if (!canMoveLeft || !canMoveRight)
+        {
+            // Ferma il cannone se non può muoversi in quella direzione
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
 
         if (Input.GetMouseButtonDown(0) && currentBall != null)
         {
@@ -38,7 +61,7 @@ public class CannoneScript : MonoBehaviour {
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
         Vector2 direction = new Vector2(
-                (mousePosition.y > 4.2f ? (mousePosition.x > -1.5f ? 2f : -5f) : mousePosition.x) - transform.position.x,
+                (mousePosition.y > 4.2f ? (mousePosition.x > transform.position.x ? transform.position.x + 3f : transform.position.x - 3f) : mousePosition.x) - transform.position.x,
                 (mousePosition.y > 4.2f ? 4.2f : mousePosition.y) - transform.position.y
             ).normalized;
 
@@ -60,7 +83,7 @@ public class CannoneScript : MonoBehaviour {
 
         if (mousePosition.y > 4.2)
         {
-            launchDirection = (new Vector3((mousePosition.x + 1.5f) > 0 ? 2f : -5f, 4.2f, 0) - transform.position).normalized;
+            launchDirection = (new Vector3((mousePosition.x > transform.position.x ? transform.position.x + 3f : transform.position.x - 3f), 4.2f, 0) - transform.position).normalized;
         }
         else launchDirection = (mousePosition - transform.position).normalized;
         ballRigidbody.AddForce(launchDirection * launchForce);
@@ -82,4 +105,20 @@ public class CannoneScript : MonoBehaviour {
         currentArrow = Instantiate(arrowPrefab, shootPoint.position, Quaternion.identity);
         currentArrow.transform.SetParent(shootPoint); // Collega la freccia al punto di lancio
     }
+
+    void Move(float direction)
+    {
+        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+    }
+
+    public void SetCanMoveLeft(bool canMove)
+    {
+        canMoveLeft = canMove;
+    }
+
+    public void SetCanMoveRight(bool canMove)
+    {
+        canMoveRight = canMove;
+    }
 }
+

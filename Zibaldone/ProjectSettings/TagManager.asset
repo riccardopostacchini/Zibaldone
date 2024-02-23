@@ -11,6 +11,8 @@ TagManager:
   - Floor
   - Cannone
   - ShootPoint
+  - TriggerDestro
+  - TriggerSinistro
   layers:
   - Default
   - TransparentFX
