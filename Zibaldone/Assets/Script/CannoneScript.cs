@@ -7,7 +7,6 @@ public class CannoneScript : MonoBehaviour {
 
     public GameObject ballPrefab;
     public GameObject arrowPrefab;
-    public float launchForce = 500f;
     public Transform shootPoint;
     public GameObject currentBall;
     public GameObject currentArrow;
