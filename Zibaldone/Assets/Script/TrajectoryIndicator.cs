@@ -6,7 +6,7 @@ public class TrajectoryRenderer : MonoBehaviour
     public Transform shootPoint;
     public Rigidbody2D ballPrefab;
     public LineRenderer lineRenderer;
-    public float launchForce = 500f; // Forza di lancio che applicherai
+    public float launchForce;
     public int resolution = 30; // Numero di punti lungo la traiettoria
     public float maxDistance = 5.0f; // Distanza massima della traiettoria
     public LayerMask collisionLayer; // Layer su cui controllare le collisioni
@@ -14,6 +14,8 @@ public class TrajectoryRenderer : MonoBehaviour
     void Update()
     {
         shootPoint = GameObject.Find("ShootPoint").transform;
+
+        launchForce = GameObject.Find("Cannone").GetComponent<CannoneScript>().currentLaunchForce;
 
         DrawTrajectory();
     }

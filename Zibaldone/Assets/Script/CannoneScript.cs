@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CannoneScript : MonoBehaviour {
 
@@ -12,11 +13,21 @@ public class CannoneScript : MonoBehaviour {
     public GameObject currentArrow;
     public float ballScale = 0.25f;
 
+    // VARIABILI PER IL MOVIMENTO DEL CANNONE
     public float speed = 5.0f; // Velocità di movimento del cannone
-
     private Rigidbody2D rb;
     private bool canMoveLeft = true;
     private bool canMoveRight = true;
+
+    // VARIABILI PER IL SET DELLA FORZA DI LANCIO DELLA PALLA
+    public float minLaunchForce = 100f;
+    public float maxLaunchForce = 1000f;
+    public float changeSpeed = 500f;
+    public float currentLaunchForce;
+    private bool isIncreasing = true; // Direzione dell'incremento della forza
+    private bool isSettingForce = false; // Sta impostando la forza
+    public TMP_Text launchForceText;
+
 
     private void Awake()
     {
@@ -49,9 +60,40 @@ public class CannoneScript : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0) && currentBall != null)
         {
-            ApplyLaunchForce();
+            isSettingForce = true;
+            currentLaunchForce = minLaunchForce;
+        }
 
-            Destroy(currentArrow);
+        if (Input.GetMouseButton(0) && isSettingForce && currentBall != null)
+        {
+            // Oscilla la forza tra minimo e massimo
+            if (isIncreasing)
+            {
+                currentLaunchForce += changeSpeed * Time.deltaTime;
+                if (currentLaunchForce >= maxLaunchForce)
+                {
+                    isIncreasing = false;
+                }
+            }
+            else
+            {
+                currentLaunchForce -= changeSpeed * Time.deltaTime;
+                if (currentLaunchForce <= minLaunchForce)
+                {
+                    isIncreasing = true;
+                }
+            }
+        }
+
+        if (launchForceText != null)
+        {
+            launchForceText.text = currentLaunchForce.ToString("F2");
+        }
+
+        if (Input.GetMouseButtonUp(0) && isSettingForce && currentBall != null)
+        {
+            ApplyLaunchForce();
+            isSettingForce = false;
         }
     }
 
@@ -86,7 +128,7 @@ public class CannoneScript : MonoBehaviour {
             launchDirection = (new Vector3((mousePosition.x > transform.position.x ? transform.position.x + 3f : transform.position.x - 3f), 4.2f, 0) - transform.position).normalized;
         }
         else launchDirection = (mousePosition - transform.position).normalized;
-        ballRigidbody.AddForce(launchDirection * launchForce);
+        ballRigidbody.AddForce(launchDirection * currentLaunchForce);
         currentBall = null; // Resetta il riferimento corrente della palla
     }
 
