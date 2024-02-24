@@ -11,6 +11,8 @@ public class TrajectoryRenderer : MonoBehaviour
     public float maxDistance = 5.0f; // Distanza massima della traiettoria
     public LayerMask collisionLayer; // Layer su cui controllare le collisioni
 
+    public CannoneScript cannoneScript;
+
     void Update()
     {
         shootPoint = GameObject.Find("ShootPoint").transform;
@@ -21,6 +23,8 @@ public class TrajectoryRenderer : MonoBehaviour
     void DrawTrajectory()
     {
         Transform cannon = GameObject.Find("Cannone").transform;
+
+        launchForce = cannoneScript.currentLaunchForce / 50;
 
         List<Vector3> points = new List<Vector3>();
         Vector2 startPosition = shootPoint.position;

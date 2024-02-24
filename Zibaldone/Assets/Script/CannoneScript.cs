@@ -36,6 +36,7 @@ public class CannoneScript : MonoBehaviour {
     // Start is called before the first frame update
     void Start()
     {
+        currentLaunchForce = minLaunchForce;
         SpawnBall();
         SpawnArrow();
     }
@@ -134,6 +135,7 @@ public class CannoneScript : MonoBehaviour {
     public void SpawnBall()
     {
         if (currentBall != null) Destroy(currentBall); // Distruggi eventuali palle precedenti
+        currentLaunchForce = minLaunchForce;
         currentBall = Instantiate(ballPrefab, shootPoint.position, Quaternion.identity);
         currentBall.transform.SetParent(shootPoint); // Collega la palla al punto di lancio
         currentBall.GetComponent<Rigidbody2D>().isKinematic = true; // La palla non sarà soggetta alla gravità fino al lancio
@@ -145,6 +147,7 @@ public class CannoneScript : MonoBehaviour {
         if (currentArrow != null) Destroy(currentArrow); // Distruggi eventuali frecce precedenti
         currentArrow = Instantiate(arrowPrefab, shootPoint.position, Quaternion.identity);
         currentArrow.transform.SetParent(shootPoint); // Collega la freccia al punto di lancio
+        currentArrow.GetComponent<TrajectoryRenderer>().cannoneScript = this;
     }
 
     void Move(float direction)
